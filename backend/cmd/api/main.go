@@ -22,7 +22,7 @@ func main() {
 
 	// CORS configuration
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000", "https://storage.googleapis.com"},  // Your frontend
+		AllowedOrigins:   []string{"http://localhost:3000", "https://*.googleapis.com"}, 
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
