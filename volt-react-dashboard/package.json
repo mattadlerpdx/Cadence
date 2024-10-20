@@ -14,7 +14,7 @@
 		"themesberg"
 	],
 	"license": "MIT",
-	"homepage": "https://demo.themesberg.com/volt-react-dashboard",
+	"homepage": "https://storage.googleapis.com/cadence-scm",
 	"bugs": {
 		"url": "https://github.com/themesberg/volt-react-dashboard/issues"
 	},
@@ -33,7 +33,7 @@
 		"@testing-library/react": "^9.3.2",
 		"@testing-library/user-event": "^7.1.2",
 		"@themesberg/react-bootstrap": "^1.4.1",
-		"bootstrap": "5.0.0-beta1",
+		"bootstrap": "^5.3.3",
 		"chartist": "^0.11.4",
 		"chartist-plugin-tooltips-updated": "^0.1.4",
 		"moment-timezone": "^0.5.31",

@@ -1,28 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
-import Inventory from './Inventory';  // Import the Inventory component
-import LandingPage from './LandingPage';  // Import the Landing Page component
-import LoginPage from './LoginPage';  // Import the Login Page component
-import RegisterPage from './RegisterPage';  // Import the Register Page component
+import Inventory from './Inventory';
+import LandingPage from './pages/LandingPageNonModular';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import Button from 'react-bootstrap/Button';  // Import Bootstrap Button component
 import 'bootstrap/dist/css/bootstrap.min.css';  // Import Bootstrap for styling
 
 function App() {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.body.setAttribute('data-bs-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+  };
+
   return (
     <Router>
       <div className="App">
+
         <Routes>
-          {/* Route for Landing Page */}
           <Route path="/" element={<LandingPage />} />
-          
-          {/* Route for Inventory Page */}
           <Route path="/inventory" element={<div><h1>Cadence Inventory</h1><Inventory /></div>} />
-          
-          {/* Login and Register Pages */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-
-          {/* Redirect to Landing Page by default */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
@@ -31,4 +38,3 @@ function App() {
 }
 
 export default App;
-

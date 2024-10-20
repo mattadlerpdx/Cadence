@@ -1,38 +1,142 @@
-.App {
-  text-align: center;
+/* General App Styles */ .landing-page {
+  margin: 0;
+  font-family: Arial;
+  background-color: #000; /* Default Dark Background */
+  color: #fff; /* Default White Text */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Navbar Styles */
+.navbar {
+  background-color: #000; /* Black Navbar */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #fff;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.navbar-nav .nav-link {
+  color: #fff;
+  font-weight: 500;
+  margin-right: 20px;
+  font-size: 1.1rem;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ddd;
+}
+
+.navbar-toggler-icon {
+  color: #fff;
+}
+
+/* Hero Section */
+.hero-section {
+  height: 70vh;
   display: flex;
-  flex-direction: column;
+  background-color: #000;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.App-link {
-  color: #61dafb;
+.hero-section h1 {
+  font-size: 5.5rem;
+  font-weight: 700;
+  color: #fff;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.hero-section p {
+  font-size: 1.3rem;
+  margin-top: 20px;
+  color: #ddd; /* Slightly lighter for the description */
+}
+
+.hero-section .btn {
+  border-radius: 50px;
+  padding: 12px 30px;
+}
+
+.hero-section .btn-light {
+  background-color: #fff;
+  color: #000;
+}
+
+.hero-section .btn-outline-light {
+  border-color: #fff;
+  color: #fff;
+}
+
+.hero-section .btn-outline-light:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+/* Carousel Section */
+.carousel-section {
+  padding: 50px 0;
+  background-color: #000; /* Slightly lighter than pure black */
+}
+
+.carousel-section .card {
+  background-color: #000; /* Dark card background */
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.carousel-section .card p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+
+
+
+/* Footer */
+.footer {
+  background-color: #000; /* Footer matches navbar */
+  color: #999; /* Light grey text */
+  padding: 20px 0;
+}
+
+/* Buttons */
+.btn-pill {
+  border-radius: 50px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Utility */
+.text-white {
+  color: #fff !important;
+}
+
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .hero-section p {
+    font-size: 1rem;
+  }
+
+  .carousel-section .card {
+    margin-bottom: 20px;
   }
 }
