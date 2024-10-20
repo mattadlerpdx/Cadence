@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
-import Inventory from './Inventory';
-import LandingPage from './pages/LandingPageNonModular';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import Button from 'react-bootstrap/Button';  // Import Bootstrap Button component
-import 'bootstrap/dist/css/bootstrap.min.css';  // Import Bootstrap for styling
+import AppRoutes from './routes';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
@@ -24,14 +20,9 @@ function App() {
   return (
     <Router>
       <div className="App">
-
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/inventory" element={<div><h1>Cadence Inventory</h1><Inventory /></div>} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+        <div className="content">
+          <AppRoutes />  {/* Routes with different page components */}
+        </div>
       </div>
     </Router>
   );
