@@ -1,8 +1,10 @@
+// LandingPage.jsx
 import React from 'react';
 import Navbar from '../components/Navbar';  // Navbar component
 import CarouselComponent from '../components/Carousel';  // Carousel component
 import Footer from '../components/Footer';  // Footer component
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom'; // Import Link for client-side navigation
 
 const LandingPage = () => {
   return (
@@ -13,13 +15,11 @@ const LandingPage = () => {
       {/* Hero Section */}
       <header className="hero-section text-center">
         <div className="container">
-          <p>
-            Cadence 
-          </p>
-          <h1>Sell. Scale. Grow with Cadence</h1>
-          <p>Your vertical seed-to-sale cannabis supply chain management solution.</p>
-          <a href="/register" className="btn btn-light btn-pill me-3">Get Started</a>
-          <a href="/demo" className="btn btn-outline-light btn-pill">Book My Personal Demo</a>
+          <p className="fs-3">Cadence</p>
+          <h1 className="fs-1">Sell. Scale. Grow with Cadence</h1>
+          <p className="fs-4">Your vertical seed-to-sale cannabis supply chain management solution.</p>
+          <Link to="/register" className="btn btn-light btn-pill mb-3 me-3">Get Started</Link>
+          <Link to="/demo" className="btn btn-outline-light btn-pill mb-3 me-3">Book My Personal Demo</Link>
         </div>
       </header>
 
@@ -32,8 +32,8 @@ const LandingPage = () => {
       
       {/* Call to Action Section */}
       <section className="text-center py-5">
-        <h2>Ready to Get Started?</h2>
-        <a href="/register" className="btn btn-success btn-lg mt-3">Sign Up Now</a>
+        <h2 className="fs-2">Ready to Get Started?</h2>
+        <Link to="/register" className="btn btn-success btn-lg mt-3">Sign Up Now</Link>
       </section>
 
       {/* Footer */}
@@ -43,4 +43,5 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
 

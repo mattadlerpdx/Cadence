@@ -1,6 +1,7 @@
-/* General App Styles */ .landing-page {
+/* General App Styles */
+.landing-page {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background-color: #000; /* Default Dark Background */
   color: #fff; /* Default White Text */
 }
@@ -13,22 +14,32 @@
 .navbar-brand {
   font-weight: bold;
   font-size: 1.5rem;
-  color: #fff;
+  text-align: right;
 }
 
 .navbar-nav .nav-link {
   color: #fff;
   font-weight: 500;
-  margin-right: 20px;
-  font-size: 1.1rem;
+  margin-right: 20px; /* Space between links */
+  font-size: 1.1rem; /* Adjust font size */
+  transition: color 0.3s ease; /* Smooth color transition */
 }
 
 .navbar-nav .nav-link:hover {
-  color: #ddd;
+  color: #6cc; /* Change this to your desired hover color for Sign Up */
+}
+
+.navbar-nav .nav-link:focus {
+  color: #ccc; /* Change this to your desired color for Login */
+}
+
+/* Custom Hamburger Icon */
+.navbar-toggler {
+  border: none; /* Remove border */
 }
 
 .navbar-toggler-icon {
-  color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%2888, 88, 88, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
 /* Hero Section */
@@ -38,7 +49,6 @@
   background-color: #000;
   align-items: center;
   justify-content: center;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .hero-section h1 {
@@ -55,7 +65,6 @@
 
 .hero-section .btn {
   border-radius: 50px;
-  padding: 12px 30px;
 }
 
 .hero-section .btn-light {
@@ -93,9 +102,6 @@
   color: #fff;
 }
 
-
-
-
 /* Footer */
 .footer {
   background-color: #000; /* Footer matches navbar */
@@ -123,20 +129,54 @@
   color: #fff !important;
 }
 
-
-
-
 /* Responsive */
 @media (max-width: 768px) {
   .hero-section h1 {
-    font-size: 2.5rem;
+    font-size: 2.5rem; /* Adjust heading size for smaller screens */
   }
-  
+
   .hero-section p {
-    font-size: 1rem;
+    font-size: 1rem; /* Adjust paragraph size for smaller screens */
   }
 
   .carousel-section .card {
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Spacing for cards */
+  }
+}
+
+/* General button spacing */
+.custom-spacing {
+  margin-bottom: 20px;
+}
+
+/* Specific for mobile devices */
+@media (max-width: 768px) {
+  .custom-spacing {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+    .hero-section h1 {
+    font-size: 2.5rem; /* Adjusted for smaller screens */
+  }
+
+  .hero-section p {
+    font-size: 1rem; /* Adjusted for smaller screens */
+  }
+  
+  .navbar-nav .nav-link {
+
+    font-size: 0.9rem; /* Smaller font size for navigation links */
+  }
+
+  .fs-3 {
+    font-size: 1.5rem; /* Adjust for mobile view */
+  }
+
+  .fs-4 {
+    font-size: 1.2rem; /* Adjust for mobile view */
+  }
+
+  .fs-5 {
+    font-size: 1rem; /* Adjust for mobile view */
   }
 }
