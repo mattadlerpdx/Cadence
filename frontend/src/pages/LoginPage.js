@@ -1,15 +1,20 @@
 // LoginPage.jsx
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';  // Navbar component
-import { useGoogleLogin } from '@react-oauth/google';
 import { Form, Button, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is included
 import { motion } from 'framer-motion'; // Import Framer Motion for animations
 import '../App.css'; // Import your custom styles if needed
-import { Link } from 'react-router-dom'; // Import Link for client-side navigation
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate for client-side navigation
 import { FaGoogle } from 'react-icons/fa'; // Import Google Icon
 
+// Import Firebase authentication services from services/firebase.js
+import { auth, googleProvider } from '../services/firebase'; // Adjust the path as necessary
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+
 const LoginPage = () => {
+  const navigate = useNavigate(); // Hook for navigation
+
   // State variables for form inputs
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,29 +25,7 @@ const LoginPage = () => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false); // Loading state
 
-  // Handle successful Google login
-  const handleLoginSuccess = (tokenResponse) => {
-    console.log('Google Login Success:', tokenResponse);
-    setSuccess('Google authentication successful! Redirecting...');
-    setTimeout(() => {
-      window.location.href = '/dashboard'; // Redirect to a desired page
-    }, 2000);
-  };
-
-  // Handle failed Google login
-  const handleLoginFailure = (errorResponse) => {
-    console.log('Google Login Failed:', errorResponse);
-    setError('Google authentication failed. Please try again.');
-  };
-
-  // Initialize Google Login
-  const login = useGoogleLogin({
-    onSuccess: handleLoginSuccess,
-    onError: handleLoginFailure,
-    flow: 'implicit', // or 'authorization_code' based on your setup
-  });
-
-  // Handle form submission
+  // Handle form submission for email/password login
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -59,44 +42,73 @@ const LoginPage = () => {
     setSuccess('');
     setLoading(true);
 
-    // Prepare form data
-    const formData = { email, password };
-
     try {
-      // Replace this with your actual login logic
-      const response = await loginUser(formData);
-      console.log('User logged in:', response);
+      // Firebase sign-in with email and password
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('User logged in:', userCredential.user);
       setSuccess('Login successful! Redirecting...');
 
       // Optionally, redirect to dashboard page after a delay
       setTimeout(() => {
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
       }, 2000);
     } catch (error) {
       console.error('Error logging in user:', error);
-      setError('Login failed. Please check your credentials and try again.');
+      // Map Firebase auth errors to user-friendly messages
+      switch (error.code) {
+        case 'auth/invalid-email':
+          setError('Invalid email format.');
+          break;
+        case 'auth/user-disabled':
+          setError('This user has been disabled.');
+          break;
+        case 'auth/user-not-found':
+          setError('No user found with this email.');
+          break;
+        case 'auth/wrong-password':
+          setError('Incorrect password.');
+          break;
+        default:
+          setError('Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Placeholder for actual user login function
-  const loginUser = async (formData) => {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
+  // Handle Google sign-in using Firebase
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential.accessToken;
+      // The signed-in user info.
+      const user = result.user;
+      console.log('Google Sign-In Success:', user);
+      setSuccess('Google authentication successful! Redirecting...');
+
+      // Optionally, redirect to dashboard page after a delay
       setTimeout(() => {
-        // Simple validation for demonstration
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-          reject(new Error('Invalid email format'));
-        } else if (formData.password.length < 6) {
-          reject(new Error('Password must be at least 6 characters'));
-        } else {
-          // Simulate successful login
-          resolve({ message: 'User logged in successfully' });
-        }
-      }, 1500);
-    });
+        navigate('/dashboard');
+      }, 2000);
+    } catch (error) {
+      console.error('Google Sign-In Failed:', error);
+      // Handle Errors here.
+      // const errorCode = error.code;
+      // const errorMessage = error.message;
+      // The email of the user's account used.
+      // const email = error.customData?.email;
+      // The AuthCredential type that was used.
+      // const credential = GoogleAuthProvider.credentialFromError(error);
+      setError('Google authentication failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Define animation variants for container and elements
@@ -196,7 +208,7 @@ const LoginPage = () => {
                         minLength={6}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Please provide your password.
+                        Please provide your password (minimum 6 characters).
                       </Form.Control.Feedback>
                     </Form.Group>
 
@@ -220,12 +232,12 @@ const LoginPage = () => {
                   <hr className="flex-grow-1" />
                 </motion.div>
 
-                {/* Custom Google Login Button */}
+                {/* Google Login Button */}
                 <motion.div className="d-grid" variants={rowVariants}>
                   <Button
                     variant="light"
                     className="btn-google d-flex align-items-center justify-content-center btn-lg fs-5"
-                    onClick={() => login()}
+                    onClick={handleGoogleSignIn}
                     aria-label="Sign in with Google" // Added for accessibility
                   >
                     <FaGoogle className="me-2" size={24} /> {/* Larger icon with margin */}
@@ -248,5 +260,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-

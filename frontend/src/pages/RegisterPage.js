@@ -1,11 +1,16 @@
+// src/pages/RegisterPage.jsx
+
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar'; // Navbar component
-import { useGoogleLogin } from '@react-oauth/google';
 import { Form, Button, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is included
 import { motion } from 'framer-motion'; // Import Framer Motion for animations
 import { Link } from 'react-router-dom'; // Import Link for client-side navigation
 import { FaGoogle } from 'react-icons/fa'; // Import Google Icon
+
+// Import Firebase authentication services from services/firebase.js
+import { auth, googleProvider } from '../services/firebase'; // Adjust the path as necessary
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 const RegisterPage = () => {
   // State variables for form inputs
@@ -19,8 +24,8 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false); // Loading state
 
   // Handle successful Google login
-  const handleLoginSuccess = (tokenResponse) => {
-    console.log('Google Login Success:', tokenResponse);
+  const handleGoogleSignInSuccess = (user) => {
+    console.log('Google Login Success:', user);
     setSuccess('Google authentication successful! Redirecting...');
     setTimeout(() => {
       window.location.href = '/dashboard'; // Redirect to a desired page
@@ -28,17 +33,28 @@ const RegisterPage = () => {
   };
 
   // Handle failed Google login
-  const handleLoginFailure = (errorResponse) => {
+  const handleGoogleSignInFailure = (errorResponse) => {
     console.log('Google Login Failed:', errorResponse);
     setError('Google authentication failed. Please try again.');
   };
 
-  // Initialize Google Login
-  const login = useGoogleLogin({
-    onSuccess: handleLoginSuccess,
-    onError: handleLoginFailure,
-    flow: 'implicit', // or 'authorization_code' based on your setup
-  });
+  // Handle Google Sign-In using Firebase
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      handleGoogleSignInSuccess(user);
+    } catch (error) {
+      console.error('Google Sign-In Failed:', error);
+      handleGoogleSignInFailure(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -61,9 +77,9 @@ const RegisterPage = () => {
     const formData = { email, password };
 
     try {
-      // Replace this with your actual registration logic
-      const response = await registerUser(formData);
-      console.log('User registered:', response);
+      // Firebase registration with email and password
+      const userCredential = await registerUser(formData);
+      console.log('User registered:', userCredential.user);
       setSuccess('Registration successful! Redirecting to login...');
 
       // Optionally, redirect to login page after a delay
@@ -72,28 +88,28 @@ const RegisterPage = () => {
       }, 2000);
     } catch (error) {
       console.error('Error registering user:', error);
-      setError('Registration failed. Please try again.');
+      // Map Firebase auth errors to user-friendly messages
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          setError('This email is already in use.');
+          break;
+        case 'auth/invalid-email':
+          setError('Invalid email format.');
+          break;
+        case 'auth/weak-password':
+          setError('Password should be at least 6 characters.');
+          break;
+        default:
+          setError('Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Placeholder for actual user registration function
+  // Placeholder for actual user registration function using Firebase
   const registerUser = async (formData) => {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simple validation for demonstration
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-          reject(new Error('Invalid email format'));
-        } else if (formData.password.length < 6) {
-          reject(new Error('Password must be at least 6 characters'));
-        } else {
-          resolve({ message: 'User registered successfully' });
-        }
-      }, 1500);
-    });
+    return createUserWithEmailAndPassword(auth, formData.email, formData.password);
   };
 
   // Define animation variants
@@ -217,16 +233,16 @@ const RegisterPage = () => {
                   <hr className="flex-grow-1" />
                 </motion.div>
 
-                {/* Custom Google Login Button */}
+                {/* Google Login Button */}
                 <motion.div className="d-grid" variants={rowVariants}>
                   <Button
                     variant="light"
                     className="btn-google d-flex align-items-center justify-content-center btn-lg fs-5"
-                    onClick={() => login()}
-                    aria-label="Sign in with Google"
+                    onClick={handleGoogleSignIn}
+                    aria-label="Register through Google" // Added for accessibility
                   >
                     <FaGoogle className="me-2" size={24} /> {/* Larger icon with margin */}
-                    Sign in with Google
+                    Register through Google
                   </Button>
                 </motion.div>
 
