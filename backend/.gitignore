@@ -1,0 +1,11 @@
+# Environment file
+.env
+
+# Logs and cache
+*.log
+tmp/
+cache/
+
+# Sensitive config files
+*.key
+*.pem

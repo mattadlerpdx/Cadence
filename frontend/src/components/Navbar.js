@@ -1,42 +1,36 @@
 // src/components/Navbar.jsx
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is included
-import { auth } from '../services/firebase'; // Import auth from your Firebase setup
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { auth } from '../services/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 
 const Navbar = () => {
-  const [user, setUser] = useState(null); // State to hold the authenticated user
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate(); // Initialize navigate function
 
   useEffect(() => {
-    // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
-  // Handle user sign-out
   const handleSignOut = async () => {
     try {
       await signOut(auth);
       console.log('User signed out successfully.');
-      // Redirect to home page after sign-out
-      window.location.href = '/';
+      navigate('/'); // Use navigate to redirect to the home page
     } catch (error) {
-      console.error('Error signing out:', error);
-      // Optionally, display an error message to the user
-      alert('Failed to sign out. Please try again.');
+      console.error('Error signing out:', error.code, error.message);
+      alert(`Failed to sign out: ${error.message}`);
     }
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-black">
       <div className="container">
-        {/* Modify the home button based on authentication state */}
         <Link className="navbar-brand text-white" to={user ? "/dashboard" : "/"}>
           Cadence
         </Link>
@@ -54,7 +48,6 @@ const Navbar = () => {
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul className="navbar-nav ms-auto text-right">
             {!user ? (
-              // If user is not authenticated, show Login and Sign Up
               <>
                 <li className="nav-item">
                   <Link className="nav-link" to="/login">Login</Link>
@@ -64,12 +57,11 @@ const Navbar = () => {
                 </li>
               </>
             ) : (
-              // If user is authenticated, show Sign Out
               <li className="nav-item">
                 <button
                   className="nav-link btn btn-link text-white"
                   onClick={handleSignOut}
-                  style={{ textDecoration: 'none' }} // Remove underline from button
+                  style={{ textDecoration: 'none' }}
                 >
                   Sign Out
                 </button>

@@ -1,34 +1,30 @@
 // src/pages/RegisterPage.jsx
 
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar'; // Navbar component
+import Navbar from '../components/Navbar';
 import { Form, Button, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is included
-import { motion } from 'framer-motion'; // Import Framer Motion for animations
-import { Link } from 'react-router-dom'; // Import Link for client-side navigation
-import { FaGoogle } from 'react-icons/fa'; // Import Google Icon
-
-// Import Firebase authentication services from services/firebase.js
-import { auth, googleProvider } from '../services/firebase'; // Adjust the path as necessary
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
+import { FaGoogle } from 'react-icons/fa';
+import { auth, googleProvider } from '../services/firebase';
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 const RegisterPage = () => {
-  // State variables for form inputs
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  // State variables for form validation and feedback
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate
 
   // Handle successful Google login
   const handleGoogleSignInSuccess = (user) => {
     console.log('Google Login Success:', user);
     setSuccess('Google authentication successful! Redirecting...');
     setTimeout(() => {
-      window.location.href = '/dashboard'; // Redirect to a desired page
+      navigate('/dashboard'); // Redirect to dashboard
     }, 2000);
   };
 
@@ -46,8 +42,7 @@ const RegisterPage = () => {
 
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      handleGoogleSignInSuccess(user);
+      handleGoogleSignInSuccess(result.user);
     } catch (error) {
       console.error('Google Sign-In Failed:', error);
       handleGoogleSignInFailure(error);
@@ -56,12 +51,11 @@ const RegisterPage = () => {
     }
   };
 
-  // Handle form submission
+  // Handle form submission for email/password registration
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
 
-    // Check form validity
     if (form.checkValidity() === false) {
       e.stopPropagation();
       setValidated(true);
@@ -73,22 +67,18 @@ const RegisterPage = () => {
     setSuccess('');
     setLoading(true);
 
-    // Prepare form data
     const formData = { email, password };
 
     try {
-      // Firebase registration with email and password
-      const userCredential = await registerUser(formData);
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       console.log('User registered:', userCredential.user);
       setSuccess('Registration successful! Redirecting to login...');
 
-      // Optionally, redirect to login page after a delay
       setTimeout(() => {
-        window.location.href = '/login';
+        navigate('/login'); // Redirect to login page
       }, 2000);
     } catch (error) {
       console.error('Error registering user:', error);
-      // Map Firebase auth errors to user-friendly messages
       switch (error.code) {
         case 'auth/email-already-in-use':
           setError('This email is already in use.');
@@ -107,32 +97,15 @@ const RegisterPage = () => {
     }
   };
 
-  // Placeholder for actual user registration function using Firebase
-  const registerUser = async (formData) => {
-    return createUserWithEmailAndPassword(auth, formData.email, formData.password);
-  };
-
-  // Define animation variants
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2, // Stagger each child by 0.2 seconds
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
   };
 
   const rowVariants = {
-    hidden: { opacity: 0, y: 20 }, // Start slightly below with 0 opacity
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: 'spring',
-        stiffness: 50,
-      },
-    },
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 50 } },
   };
 
   return (
@@ -146,20 +119,13 @@ const RegisterPage = () => {
       >
         <Container fluid className="min-vh-100 d-flex align-items-center justify-content-center bg-black">
           <Row className="w-100">
-            {/* Adjust the width to match the login page */}
-            <Col xs={12} sm={10} md={8} lg={7} xl={6} className="mx-auto"> 
-              <motion.div
-                className="bg-black text-white shadow rounded p-5"
-                variants={rowVariants}
-              >
-                <motion.h1 
-                  className="text-center mb-4 fs-3" // Adjusted font size for mobile
-                  variants={rowVariants}
-                >
+            <Col xs={12} sm={10} md={8} lg={7} xl={6} className="mx-auto">
+              <motion.div className="bg-black text-white shadow rounded p-5" variants={rowVariants}>
+                <motion.h1 className="text-center mb-4 fs-3" variants={rowVariants}>
                   Register for Cadence
                 </motion.h1>
 
-                {/* Display Success Message */}
+                {/* Success Message */}
                 {success && (
                   <motion.div variants={rowVariants}>
                     <Alert variant="success" onClose={() => setSuccess('')} dismissible>
@@ -168,7 +134,7 @@ const RegisterPage = () => {
                   </motion.div>
                 )}
 
-                {/* Display Error Message */}
+                {/* Error Message */}
                 {error && (
                   <motion.div variants={rowVariants}>
                     <Alert variant="danger" onClose={() => setError('')} dismissible>
@@ -180,7 +146,6 @@ const RegisterPage = () => {
                 {/* Registration Form */}
                 <motion.div variants={rowVariants}>
                   <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    {/* Email Field */}
                     <Form.Group controlId="formEmail" className="mb-4">
                       <Form.Label className="fs-5">Email address</Form.Label>
                       <Form.Control
@@ -196,7 +161,6 @@ const RegisterPage = () => {
                       </Form.Control.Feedback>
                     </Form.Group>
 
-                    {/* Password Field */}
                     <Form.Group controlId="formPassword" className="mb-5">
                       <Form.Label className="fs-5">Password</Form.Label>
                       <Form.Control
@@ -213,7 +177,6 @@ const RegisterPage = () => {
                       </Form.Control.Feedback>
                     </Form.Group>
 
-                    {/* Submit Button with larger text */}
                     <Button variant="primary" type="submit" className="w-100 btn-lg fs-5" disabled={loading}>
                       {loading ? (
                         <>
@@ -233,15 +196,15 @@ const RegisterPage = () => {
                   <hr className="flex-grow-1" />
                 </motion.div>
 
-                {/* Google Login Button */}
+                {/* Google Sign-In Button */}
                 <motion.div className="d-grid" variants={rowVariants}>
                   <Button
                     variant="light"
                     className="btn-google d-flex align-items-center justify-content-center btn-lg fs-5"
                     onClick={handleGoogleSignIn}
-                    aria-label="Register through Google" // Added for accessibility
+                    aria-label="Register through Google"
                   >
-                    <FaGoogle className="me-2" size={24} /> {/* Larger icon with margin */}
+                    <FaGoogle className="me-2" size={24} />
                     Register through Google
                   </Button>
                 </motion.div>

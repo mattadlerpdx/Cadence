@@ -9,7 +9,7 @@ import '../App.css'; // You can style the sidebar separately if needed
 const Sidebar = ({ setActiveSection }) => {
   return (
     <div className="d-flex flex-column bg-dark p-3 vh-100" style={{ width: '250px' }}>
-  
+
 
       <Accordion>
         {/* Inventory Accordion */}
@@ -18,24 +18,24 @@ const Sidebar = ({ setActiveSection }) => {
           <Accordion.Body>
             <ul className="list-unstyled">
               <li>
-                <button 
-                  className="text-white btn btn-link" 
+                <button
+                  className="text-white btn btn-link"
                   onClick={() => setActiveSection('inventory-upload')}
                   style={{ textDecoration: 'none' }}>
                   Upload Inventory
                 </button>
               </li>
               <li>
-                <button 
-                  className="text-white btn btn-link" 
+                <button
+                  className="text-white btn btn-link"
                   onClick={() => setActiveSection('inventory-view')}
                   style={{ textDecoration: 'none' }}>
                   View Inventory
                 </button>
               </li>
               <li>
-                <button 
-                  className="text-white btn btn-link" 
+                <button
+                  className="text-white btn btn-link"
                   onClick={() => setActiveSection('inventory-delete')}
                   style={{ textDecoration: 'none' }}>
                   Delete Inventory
@@ -51,24 +51,24 @@ const Sidebar = ({ setActiveSection }) => {
           <Accordion.Body>
             <ul className="list-unstyled">
               <li>
-                <button 
-                  className="text-white btn btn-link" 
+                <button
+                  className="text-white btn btn-link"
                   onClick={() => setActiveSection('reports-upload')}
                   style={{ textDecoration: 'none' }}>
                   Upload Reports
                 </button>
               </li>
               <li>
-                <button 
-                  className="text-white btn btn-link" 
+                <button
+                  className="text-white btn btn-link"
                   onClick={() => setActiveSection('reports-view')}
                   style={{ textDecoration: 'none' }}>
                   View Reports
                 </button>
               </li>
               <li>
-                <button 
-                  className="text-white btn btn-link" 
+                <button
+                  className="text-white btn btn-link"
                   onClick={() => setActiveSection('reports-delete')}
                   style={{ textDecoration: 'none' }}>
                   Delete Reports
