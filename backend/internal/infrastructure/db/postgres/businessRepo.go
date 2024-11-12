@@ -75,3 +75,17 @@ func (r *BusinessRepository) Delete(id int) error {
 	}
 	return nil
 }
+
+// Update modifies an existing business in the database.
+func (r *BusinessRepository) Update(id int, name, owner, contactInfo string) (*business.Business, error) {
+	query := `UPDATE businesses SET name = $1, owner = $2, contact_info = $3 WHERE id = $4 RETURNING id, name, owner, contact_info`
+	var b business.Business
+	err := r.db.QueryRow(query, name, owner, contactInfo, id).Scan(&b.ID, &b.Name, &b.Owner, &b.ContactInfo)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("business with ID %d not found", id)
+		}
+		return nil, fmt.Errorf("failed to update business: %w", err)
+	}
+	return &b, nil
+}

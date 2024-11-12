@@ -34,3 +34,14 @@ func (s *Service) GetAllBusinesses() ([]*Business, error) {
 func (s *Service) DeleteBusiness(id int) error {
 	return s.repository.Delete(id)
 }
+
+// UpdateBusiness updates the information of an existing business.
+func (s *Service) UpdateBusiness(id int, name, owner, contactInfo string) (*Business, error) {
+	// Update the business directly using the Update method
+	updatedBusiness, err := s.repository.Update(id, name, owner, contactInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedBusiness, nil
+}

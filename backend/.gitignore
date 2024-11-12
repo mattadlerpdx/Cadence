@@ -9,3 +9,4 @@ cache/
 # Sensitive config files
 *.key
 *.pem
+env_vars.yaml

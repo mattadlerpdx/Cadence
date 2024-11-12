@@ -6,4 +6,5 @@ type Repository interface {
 	FindByID(id int) (*Business, error)
 	FindAll() ([]*Business, error)
 	Delete(id int) error
+	Update(id int, name, owner, contactInfo string) (*Business, error) // Add the Update method to the interface
 }

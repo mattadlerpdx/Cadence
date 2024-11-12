@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 	"github.com/mattadlerpdx/Cadence/backend/internal/domain/business"
 	"github.com/mattadlerpdx/Cadence/backend/internal/domain/inventory"
 	"github.com/mattadlerpdx/Cadence/backend/internal/infrastructure/controllers"
@@ -20,23 +19,22 @@ import (
 )
 
 func main() {
-	// Load environment variables from .env file
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		log.Println("No .env file found, proceeding with system environment variables")
-	}
-
-	// Set up database connection using TCP (for local development)
+	// Retrieve environment variables for database connection
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASS")
 	dbName := os.Getenv("DB_NAME")
-	dbHost := os.Getenv("DB_HOST") // public IP of Cloud SQL instance
-	dbPort := os.Getenv("DB_PORT")
+	dbHost := os.Getenv("DB_HOST") // Cloud SQL Unix socket path, e.g., "/cloudsql/cadencescm:us-west1:cadence-postgres-instance"
 
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
+	// Ensure all required environment variables are set
+	if dbUser == "" || dbPass == "" || dbName == "" || dbHost == "" {
+		log.Fatal("Database environment variables are not set properly.")
+	}
+
+	// Use key-value format for the DSN to connect to Cloud SQL via Unix socket
+	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", dbUser, dbPass, dbName, dbHost)
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer db.Close()
 
@@ -51,12 +49,13 @@ func main() {
 	// Set up the router
 	router := mux.NewRouter()
 
-	// Define routes
+	// Define routes for business
 	router.HandleFunc("/business", businessHandler.CreateBusiness).Methods("POST")
 	router.HandleFunc("/business/{id}", businessHandler.GetBusiness).Methods("GET")
-	//router.HandleFunc("/business", businessHandler.GetAllBusinesses).Methods("GET")
-	//router.HandleFunc("/business/{id}", businessHandler.DeleteBusiness).Methods("DELETE")
+	router.HandleFunc("/business/{id}", businessHandler.UpdateBusiness).Methods("PUT")    // Update route
+	router.HandleFunc("/business/{id}", businessHandler.DeleteBusiness).Methods("DELETE") // Delete route
 
+	// Define routes for inventory
 	router.HandleFunc("/inventory", inventoryHandler.AddInventoryItem).Methods("POST")
 	router.HandleFunc("/inventory/{id}", inventoryHandler.GetInventoryItem).Methods("GET")
 	router.HandleFunc("/inventory", inventoryHandler.GetAllInventoryItems).Methods("GET")
@@ -64,6 +63,9 @@ func main() {
 
 	// Handle preflight requests for CORS (OPTIONS requests)
 	router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		w.WriteHeader(http.StatusOK)
 	})
 
@@ -79,16 +81,16 @@ func main() {
 		AllowedOrigins:   allowedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
-		AllowCredentials: true, // Set to true if using cookies or authentication
+		AllowCredentials: true,
 	})
 
-	// Apply CORS middleware globally to the router
+	// Apply CORS middleware to the router
 	handler := c.Handler(router)
 
-	// Get the server port from environment variable, or use a default
+	// Get the server port from environment variables or use a default
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default port if not specified
+		port = "8080"
 	}
 
 	// Start the server
