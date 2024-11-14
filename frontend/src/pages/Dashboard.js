@@ -5,6 +5,14 @@ import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import * as XLSX from 'xlsx'; // Handles Excel files
 
+
+import BusinessFormCreate from "../domain/business/components/BusinessFormCreate";
+import BusinessFormUpdate from "../domain/business/components/BusinessFormUpdate";
+import BusinessFormDelete from "../domain/business/components/BusinessFormDelete";
+import BusinessList from "../domain/business/components/BusinessGetAll"; // Rename in import if used as BusinessList
+import { fetchBusinessData } from "../domain/business/services/businessService";
+
+
 const Dashboard = () => {
   const [chartData, setChartData] = useState(null);
   const [fetchedData, setFetchedData] = useState(null); // State to store fetched data
@@ -12,24 +20,14 @@ const Dashboard = () => {
   const [businessName, setBusinessName] = useState(''); // State to store business name
   const [businessOwner, setBusinessOwner] = useState(''); // State to store business owner
   const [businessContactInfo, setBusinessContactInfo] = useState(''); // State to store business contact info
-  const [activeSection, setActiveSection] = useState('fetch'); // Default to "fetch" section
   const [businessData, setBusinessData] = useState(null); // State for business data
+  const [activeSection, setActiveSection] = useState("business-list"); // Default to showing the business list
 
   // Function to fetch data from the backend
-  const handleFetchData = async () => {
-    if (!businessId) {
-      alert("Please enter a valid business ID.");
-      return;
-    }
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/business/${businessId}`);
-      if (!response.ok) throw new Error('Failed to fetch data');
-      const data = await response.json();
-      setFetchedData(data); // Store the fetched data
-    } catch (error) {
-      console.error(error);
-    }
+  const handleFetchData = () => {
+    fetchBusinessData(businessId, setFetchedData);
   };
+  
 
   // Handle CSV File Upload using papaparse
   const handleCSVUpload = (file) => {
@@ -77,6 +75,7 @@ const Dashboard = () => {
     reader.readAsArrayBuffer(file);
   };
 
+  /*
   // Handle creating a new business
   const handleCreateBusiness = async () => {
     if (!businessName || !businessOwner || !businessContactInfo) {
@@ -105,6 +104,7 @@ const Dashboard = () => {
       console.error(error);
     }
   };
+
 
   // Handle updating an existing business
   const handleUpdateBusiness = async () => {
@@ -154,6 +154,7 @@ const Dashboard = () => {
       console.error(error);
     }
   };
+  */
 
   // Render content based on the active section
   const renderContent = () => {
@@ -209,91 +210,121 @@ const Dashboard = () => {
             )}
           </>
         );
-      case 'business-create':
+      /*
+  case 'business-create':
+    return (
+      <>
+        <h1>Create Business</h1>
+        <input
+          type="text"
+          placeholder="Business Name"
+          value={businessName}
+          onChange={(e) => setBusinessName(e.target.value)}
+          className="form-control"
+        />
+        <input
+          type="text"
+          placeholder="Owner"
+          value={businessOwner}
+          onChange={(e) => setBusinessOwner(e.target.value)}
+          className="form-control"
+        />
+        <input
+          type="text"
+          placeholder="Contact Info"
+          value={businessContactInfo}
+          onChange={(e) => setBusinessContactInfo(e.target.value)}
+          className="form-control"
+        />
+        <button onClick={handleCreateBusiness} className="btn btn-primary mt-2">Create Business</button>
+      </>
+    );
+          case 'business-update':
+    return (
+      <>
+        <h1>Update Business</h1>
+        <div className="mb-3">
+          <label htmlFor="businessId" className="form-label">Enter Business ID:</label>
+          <input
+            type="number"
+            id="businessId"
+            value={businessId}
+            onChange={(e) => setBusinessId(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <input
+          type="text"
+          placeholder="Business Name"
+          value={businessName}
+          onChange={(e) => setBusinessName(e.target.value)}
+          className="form-control"
+        />
+        <input
+          type="text"
+          placeholder="Owner"
+          value={businessOwner}
+          onChange={(e) => setBusinessOwner(e.target.value)}
+          className="form-control"
+        />
+        <input
+          type="text"
+          placeholder="Contact Info"
+          value={businessContactInfo}
+          onChange={(e) => setBusinessContactInfo(e.target.value)}
+          className="form-control"
+        />
+        <button onClick={handleUpdateBusiness} className="btn btn-primary mt-2">Update Business</button>
+      </>
+    );
+          case 'business-delete':
+    return (
+      <>
+        <h1>Delete Business</h1>
+        <div className="mb-3">
+          <label htmlFor="businessId" className="form-label">Enter Business ID:</label>
+          <input
+            type="number"
+            id="businessId"
+            value={businessId}
+            onChange={(e) => setBusinessId(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <button onClick={handleDeleteBusiness} className="btn btn-danger mt-2">Delete Business</button>
+      </>
+    );
+    */
+    case "business-create":
+      return (
+        <BusinessFormCreate
+          setBusinessData={setBusinessData}
+          onCreateComplete={() => setActiveSection("business-list")} // Show all businesses after creation
+        />
+      );
+    
+
+      case "business-update":
         return (
-          <>
-            <h1>Create Business</h1>
-            <input
-              type="text"
-              placeholder="Business Name"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              className="form-control"
-            />
-            <input
-              type="text"
-              placeholder="Owner"
-              value={businessOwner}
-              onChange={(e) => setBusinessOwner(e.target.value)}
-              className="form-control"
-            />
-            <input
-              type="text"
-              placeholder="Contact Info"
-              value={businessContactInfo}
-              onChange={(e) => setBusinessContactInfo(e.target.value)}
-              className="form-control"
-            />
-            <button onClick={handleCreateBusiness} className="btn btn-primary mt-2">Create Business</button>
-          </>
+          <BusinessFormUpdate
+            businessId={businessId}
+            setBusinessData={setBusinessData}
+          />
         );
-      case 'business-update':
-        return (
-          <>
-            <h1>Update Business</h1>
-            <div className="mb-3">
-              <label htmlFor="businessId" className="form-label">Enter Business ID:</label>
-              <input
-                type="number"
-                id="businessId"
-                value={businessId}
-                onChange={(e) => setBusinessId(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <input
-              type="text"
-              placeholder="Business Name"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              className="form-control"
+
+        case "business-delete":
+          return (
+            <BusinessFormDelete
+              businessId={businessId}
+              setBusinessData={setBusinessData}
+              onDelete={() => setActiveSection("business-list")} // Switch back to the list after delete
             />
-            <input
-              type="text"
-              placeholder="Owner"
-              value={businessOwner}
-              onChange={(e) => setBusinessOwner(e.target.value)}
-              className="form-control"
-            />
-            <input
-              type="text"
-              placeholder="Contact Info"
-              value={businessContactInfo}
-              onChange={(e) => setBusinessContactInfo(e.target.value)}
-              className="form-control"
-            />
-            <button onClick={handleUpdateBusiness} className="btn btn-primary mt-2">Update Business</button>
-          </>
-        );
-      case 'business-delete':
-        return (
-          <>
-            <h1>Delete Business</h1>
-            <div className="mb-3">
-              <label htmlFor="businessId" className="form-label">Enter Business ID:</label>
-              <input
-                type="number"
-                id="businessId"
-                value={businessId}
-                onChange={(e) => setBusinessId(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <button onClick={handleDeleteBusiness} className="btn btn-danger mt-2">Delete Business</button>
-          </>
-        );
-      default:
-        return <div>Select a section from the sidebar.</div>;
+          );
+          case "business-getAll":
+            return <BusinessList />; // Render BusinessList to show all businesses
+  
+        default:
+          return <BusinessList />; // Render BusinessList directly to fetch and show data
     }
   };
 

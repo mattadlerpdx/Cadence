@@ -51,6 +51,28 @@ func (h *BusinessHandler) GetBusiness(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(business)
 }
 
+// GetAllBusinesses retrieves all businesses and returns them to the frontend.
+func (h *BusinessHandler) GetAllBusinesses(w http.ResponseWriter, r *http.Request) {
+	businesses, err := h.service.GetAllBusinesses()
+	if err != nil {
+		// Respond with an error message in JSON format
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError) // Set HTTP status code to 500
+
+		// Send JSON error message to the frontend
+		json.NewEncoder(w).Encode(map[string]string{
+			"error":   "Failed to retrieve businesses",
+			"details": err.Error(), // Optionally include the error details for debugging
+		})
+		return
+	}
+
+	// If successful, return the businesses as JSON
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(businesses)
+}
+
 // UpdateBusiness updates an existing business by ID
 func (h *BusinessHandler) UpdateBusiness(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

@@ -52,6 +52,7 @@ func main() {
 	// Define routes for business
 	router.HandleFunc("/business", businessHandler.CreateBusiness).Methods("POST")
 	router.HandleFunc("/business/{id}", businessHandler.GetBusiness).Methods("GET")
+	router.HandleFunc("/businessAll", businessHandler.GetAllBusinesses).Methods("GET")
 	router.HandleFunc("/business/{id}", businessHandler.UpdateBusiness).Methods("PUT")    // Update route
 	router.HandleFunc("/business/{id}", businessHandler.DeleteBusiness).Methods("DELETE") // Delete route
 

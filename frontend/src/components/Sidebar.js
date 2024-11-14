@@ -8,9 +8,64 @@ const Sidebar = ({ setActiveSection }) => {
   return (
     <div className="d-flex flex-column bg-dark p-3 vh-100" style={{ width: '250px' }}>
       <Accordion>
+        
+        {/* Business Management Accordion */}
+        <Accordion.Item eventKey="3">
+          <Accordion.Header>Business Management</Accordion.Header>
+          <Accordion.Body>
+            <ul className="list-unstyled">
+              <li>
+              <li>
+                <button
+                  className="text-white btn btn-link"
+                  onClick={() => setActiveSection('business-getAll')}
+                  style={{ textDecoration: 'none' }}
+                >
+                  Get All Businesses
+                </button>
+              </li>
+                <button
+                  className="text-white btn btn-link"
+                  onClick={() => setActiveSection('business-create')}
+                  style={{ textDecoration: 'none' }}
+                >
+                  Create Business
+                </button>
+              </li>
+              <li>
+                <button
+                  className="text-white btn btn-link"
+                  onClick={() => setActiveSection('business-update')}
+                  style={{ textDecoration: 'none' }}
+                >
+                  Update Business
+                </button>
+              </li>
+              <li>
+                <button
+                  className="text-white btn btn-link"
+                  onClick={() => setActiveSection('business-delete')}
+                  style={{ textDecoration: 'none' }}
+                >
+                  Delete Business
+                </button>
+              </li>
+              <li>
+                <button
+                  className="text-white btn btn-link"
+                  onClick={() => setActiveSection('fetch')}
+                  style={{ textDecoration: 'none' }}
+                >
+                  Fetch a Business
+                </button>
+              </li>
+
+            </ul>
+          </Accordion.Body>
+        </Accordion.Item>
         {/* Inventory Accordion */}
         <Accordion.Item eventKey="1">
-          <Accordion.Header>Inventory</Accordion.Header>
+          <Accordion.Header>**Inventory Not Implemented**</Accordion.Header>
           <Accordion.Body>
             <ul className="list-unstyled">
               <li>
@@ -56,7 +111,7 @@ const Sidebar = ({ setActiveSection }) => {
 
         {/* Reports Accordion */}
         <Accordion.Item eventKey="2">
-          <Accordion.Header>Reports</Accordion.Header>
+          <Accordion.Header>**Reports Not Implemented**</Accordion.Header>
           <Accordion.Body>
             <ul className="list-unstyled">
               <li>
@@ -90,68 +145,8 @@ const Sidebar = ({ setActiveSection }) => {
           </Accordion.Body>
         </Accordion.Item>
 
-        {/* Business Management Accordion */}
-        <Accordion.Item eventKey="3">
-          <Accordion.Header>Business Management</Accordion.Header>
-          <Accordion.Body>
-            <ul className="list-unstyled">
-              <li>
-                <button
-                  className="text-white btn btn-link"
-                  onClick={() => setActiveSection('business-create')}
-                  style={{ textDecoration: 'none' }}
-                >
-                  Create Business
-                </button>
-              </li>
-              <li>
-                <button
-                  className="text-white btn btn-link"
-                  onClick={() => setActiveSection('business-update')}
-                  style={{ textDecoration: 'none' }}
-                >
-                  Update Business
-                </button>
-              </li>
-              <li>
-                <button
-                  className="text-white btn btn-link"
-                  onClick={() => setActiveSection('business-delete')}
-                  style={{ textDecoration: 'none' }}
-                >
-                  Delete Business
-                </button>
-              </li>
-              <li>
-                <button
-                  className="text-white btn btn-link"
-                  onClick={() => setActiveSection('fetch')}
-                  style={{ textDecoration: 'none' }}
-                >
-                  Fetch Data
-                </button>
-              </li>
-            </ul>
-          </Accordion.Body>
-        </Accordion.Item>
 
-        {/* Data Operations Accordion */}
-        <Accordion.Item eventKey="4">
-          <Accordion.Header>Data Operations</Accordion.Header>
-          <Accordion.Body>
-            <ul className="list-unstyled">
-              <li>
-                <button
-                  className="text-white btn btn-link"
-                  onClick={() => setActiveSection('fetch')}
-                  style={{ textDecoration: 'none' }}
-                >
-                  Fetch Data
-                </button>
-              </li>
-            </ul>
-          </Accordion.Body>
-        </Accordion.Item>
+
 
         {/* Settings Link */}
         <ul className="nav flex-column">
