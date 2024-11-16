@@ -1,9 +1,8 @@
-// src/domain/business/components/BusinessFormUpdate.js
-
 import React, { useState } from "react";
 import { updateBusiness } from "../services/businessService";
 
-const BusinessFormUpdate = ({ businessId, setBusinessData }) => {
+const BusinessFormUpdate = ({ setBusinessData }) => {
+  const [businessId, setBusinessId] = useState(""); // Local state for businessId
   const [businessName, setBusinessName] = useState("");
   const [businessOwner, setBusinessOwner] = useState("");
   const [businessContactInfo, setBusinessContactInfo] = useState("");
@@ -26,7 +25,7 @@ const BusinessFormUpdate = ({ businessId, setBusinessData }) => {
           type="number"
           id="businessId"
           value={businessId}
-          onChange={(e) => setBusinessData(e.target.value)}
+          onChange={(e) => setBusinessId(e.target.value)} // Update local state on input change
           className="form-control"
         />
       </div>

@@ -1,10 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Accordion from 'react-bootstrap/Accordion'; // Import Bootstrap Accordion
 import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is included
 import '../App.css'; // You can style the sidebar separately if needed
 
+import { auth } from '../services/firebase';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+
 const Sidebar = ({ setActiveSection }) => {
+
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate('/'); // Redirect to the home page
+    } catch (error) {
+      alert(`Failed to sign out: ${error.message}`);
+    }
+  };
   return (
     <div className="d-flex flex-column bg-dark p-3 vh-100" style={{ width: '250px' }}>
       <Accordion>
@@ -150,9 +172,8 @@ const Sidebar = ({ setActiveSection }) => {
 
         {/* Settings Link */}
         <ul className="nav flex-column">
-          <li className="nav-item">
-            <Link to="/settings" className="nav-link text-white">Settings</Link>
-          </li>
+
+
         </ul>
       </Accordion>
     </div>

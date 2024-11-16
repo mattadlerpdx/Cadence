@@ -19,7 +19,7 @@ const BusinessList = () => {
       <ul>
         {businesses.map((business) => (
           <li key={business.id}>
-            {business.name} - {business.owner} - {business.contact_info}
+           ID: {business.id} - Name: {business.name} - Owner: {business.owner} - Contact: {business.contact_info}
           </li>
         ))}
       </ul>

@@ -35,6 +35,7 @@
 
 /* Custom Hamburger Icon */
 .navbar-toggler {
+  margin-right: 25px;
   border: none; /* Remove border */
 }
 
@@ -181,4 +182,25 @@
   .fs-5 {
     font-size: 1rem; /* Adjust for mobile view */
   }
+}
+.toggle-arrow {
+  color: #ffffff;
+  background: #343a40;
+  border-radius: 50%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.sidebar-close-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1050;
+  font-size: 1.25rem;
+  background: none; /* Ensure no background color for the button */
+  border: none; /* Remove any default borders */
+  text-decoration: none; /* Ensure no underline */
 }

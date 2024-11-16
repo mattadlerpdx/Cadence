@@ -57,28 +57,28 @@ export const fetchBusinessData = async (businessId, setFetchedData) => {
   };
   
 
-
-export const updateBusiness = async (businessId, business, setBusinessData) => {
-  if (!businessId || !business.name || !business.owner || !business.contact_info) {
-    alert("Please fill out all fields.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/business/${businessId}`, {
-      method: "PUT",
-      body: JSON.stringify(business),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) throw new Error("Failed to update business");
-    const data = await response.json();
-    setBusinessData(data); // Update business data in state
-    alert("Business updated successfully");
-  } catch (error) {
-    console.error(error);
-  }
-};
+  export const updateBusiness = async (businessId, business, setBusinessData) => {
+    if (!businessId || !business.name || !business.owner || !business.contact_info) {
+      alert("Please fill out all fields.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/business/${businessId}`, {
+        method: "PUT",
+        body: JSON.stringify(business),
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (!response.ok) throw new Error("Failed to update business");
+      const data = await response.json();
+      setBusinessData(data); // Updates parent component's state
+      alert("Business updated successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
 export const deleteBusiness = async (businessId, setBusinessData) => {
   if (!businessId) {
